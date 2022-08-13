@@ -9,6 +9,11 @@ class tag extends Model
 {
     use HasFactory;
 
+    function news()
+    {
+        return $this->belongsTo(News::class, 'news_id', 'tag_id');
+    }
+
     protected $fillable = [
         'name'
     ];

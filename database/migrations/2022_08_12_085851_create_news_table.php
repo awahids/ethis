@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('body');
             $table->json('images')->nullable();
             $table->enum('status', ['deleted', 'published', 'draft']);
+            $table->bigInteger('topic_id')->unsigned()->index()->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('news');
+        Schema::dropIfExists('news', function (Blueprint $table) {
+            $table->foreign('topic_id')->references('id')->on('topics')->onDelete('CASCADE');
+            $table->dropForeign('news_topic_id_foreign');
+        });
     }
 };

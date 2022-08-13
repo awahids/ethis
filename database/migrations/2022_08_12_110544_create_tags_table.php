@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->bigInteger('news_id')->unsigned()->index()->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +28,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tags');
+        Schema::dropIfExists('tags', function (Blueprint $table) {
+            $table->foreign('news_id')->references('id')->on('news')->onDelete('CASCADE');
+            $table->dropForeign('tags_news_id_foreign');
+        });
     }
 };

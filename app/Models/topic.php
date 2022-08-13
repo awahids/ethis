@@ -9,5 +9,10 @@ class topic extends Model
 {
     use HasFactory;
 
+    function news()
+    {
+        return $this->hasMany(News::class, 'topic_id', 'id');
+    }
+
     protected $fillable = ['title'];
 }
