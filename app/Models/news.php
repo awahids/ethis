@@ -5,21 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class news extends Model
+class News extends Model
 {
     use HasFactory;
 
-    function topics()
+    function topic()
     {
-        return $this->belongsTo(Topics::class, 'topic_id', 'id');
-    }
-
-    function tags()
-    {
-        return $this->hashMany(Tags::class, 'news_id', 'tag_id');
+        return $this->belongsTo(Topic::class, 'topic_id', 'id');
     }
 
     protected $fillable = [
-        'title', 'body', 'images', 'status'
+        'title', 'body', 'status', 'topic_id', 'images'
     ];
 }
