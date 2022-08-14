@@ -24,6 +24,10 @@ Route::post('/news', [NewsController::class, 'store']);
 
 // topic routes
 Route::post('/topic', [TopicController::class, 'store']);
+Route::get('/topics', [TopicController::class, 'index']);
+Route::get('/topic/{id}', [TopicController::class, 'show']);
+Route::put('/topic/{id}', [TopicController::class, 'update']);
+Route::delete('/topic/{id}', [TopicController::class, 'destroy']);
 
 // tag routes
 Route::post('/tag', [TagController::class, 'store']);

@@ -16,7 +16,13 @@ class TopicController extends Controller
      */
     public function index()
     {
-        //
+        $topic = Topic::all();
+        $respone = [
+            'message' => 'Get All topic successfully',
+            'data' => $topic
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
     }
 
     /**
@@ -65,7 +71,17 @@ class TopicController extends Controller
      */
     public function show($id)
     {
-        //
+        $findTopic = Topic::find($id);
+        if (!$findTopic) {
+            return response()->json(['message' => 'Topic not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $respone = [
+            'message' => 'Get topic successfully',
+            'data' => $findTopic
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
     }
 
     /**
@@ -88,7 +104,26 @@ class TopicController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $findTopic = Topic::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        
+        try {
+            $findTopic->update($request->all());
+            $respone = [
+                'message' => 'Topic updated successfully',
+                'data' => $findTopic
+            ];
+            return response()->json($respone, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Topic not updated'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -99,6 +134,16 @@ class TopicController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $findTopic = Topic::findOrFail($id);
+        try {
+            $findTopic->delete();
+            $respone = [
+                'message' => 'Topic deleted successfully',
+                'data' => $findTopic
+            ];
+            return response()->json($respone, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Topic not deleted'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
