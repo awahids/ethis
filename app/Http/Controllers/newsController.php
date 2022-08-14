@@ -153,4 +153,73 @@ class NewsController extends Controller
             return response()->json(['message' => 'News not deleted'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getByStatus(Request $request){
+        $status = News::query()
+            ->where('status', $request->status)
+            ->get();
+        
+        if (!$status) {
+            return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+        }
+        $respone = [
+            'message' => 'Get All news successfully',
+            'data' => $status
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
+    }
+
+    public function getByTopic(Request $request){
+        $topic = News::query()
+            ->where('topic_id', $request->topicId)
+            ->get();
+        
+        if (!$topic) {
+            return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+        }
+        $respone = [
+            'message' => 'Get All news successfully',
+            'data' => $topic
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
+    }
+
+    // public function getByFilter(Request $request){
+    //     $status = $request->status;
+    //     $topic = $request->topicId;
+
+    //     if($status){
+    //         $status = News::query()
+    //             ->where('status', $status)
+    //             ->get();
+
+    //         if (!$status) {
+    //             return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+    //         }
+
+    //         $respone = [
+    //             'message' => 'Get All news successfully',
+    //             'data' => $status
+    //         ];
+
+    //         return response()->json($respone, Response::HTTP_OK);
+    //     } else {
+    //         $status = News::query()
+    //             ->where('status', $topic)
+    //             ->get();
+
+    //         if (!$status) {
+    //             return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+    //         }
+
+    //         $respone = [
+    //             'message' => 'Get All news successfully',
+    //             'data' => $status
+    //         ];
+
+    //         return response()->json($respone, Response::HTTP_OK);
+    //     }
+    // }
 }
