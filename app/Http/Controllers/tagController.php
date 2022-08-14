@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class TagController extends Controller
 {
@@ -34,7 +38,24 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $tag = Tag::create($request->all());
+            $respone = [
+                'message' => 'Tag created successfully',
+                'data' => $tag
+            ];
+            return response()->json($respone, Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Tag not created'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

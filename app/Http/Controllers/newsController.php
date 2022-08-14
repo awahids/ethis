@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
+use App\Models\News;
 
 class NewsController extends Controller
 {
@@ -34,7 +37,26 @@ class NewsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
+            'status' => ['required', 'in:draft,published,deleted'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        try {
+            $news = News::create($request->all());
+            $respone = [
+                'message' => 'News created successfully',
+                'data' => $news
+            ];
+            return response()->json($respone, Response::HTTP_CREATED);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'News not created'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
