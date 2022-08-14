@@ -17,7 +17,13 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        $tags = Tag::all();
+        $respone = [
+            'message' => 'Get All tags successfully',
+            'data' => $tags
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
     }
 
     /**
@@ -66,7 +72,17 @@ class TagController extends Controller
      */
     public function show($id)
     {
-        //
+        $findTag = Tag::find($id);
+        if (!$findTag) {
+            return response()->json(['message' => 'Tag not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $respone = [
+            'message' => 'Get Tag successfully',
+            'data' => $findTag
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
     }
 
     /**
@@ -89,7 +105,26 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $findTag = Tag::find($id);
+        if (!$findTag) {
+            return response()->json(['message' => 'Tag not found'], Response::HTTP_NOT_FOUND);
+        }
+        $validator = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        try {
+            $findTag->update($request->all());
+            $respone = [
+                'message' => 'Tag updated successfully',
+                'data' => $findTag
+            ];
+            return response()->json($respone, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Tag not updated'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -100,6 +135,19 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $findTag = Tag::find($id);
+        if (!$findTag) {
+            return response()->json(['message' => 'Tag not found'], Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $findTag->delete();
+            $respone = [
+                'message' => 'Tag deleted successfully',
+                'data' => $findTag
+            ];
+            return response()->json($respone, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'Tag not deleted'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

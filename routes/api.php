@@ -35,3 +35,7 @@ Route::delete('/topic/{id}', [TopicController::class, 'destroy']);
 
 // tag routes
 Route::post('/tag', [TagController::class, 'store']);
+Route::get('/tags', [TagController::class, 'index']);
+Route::get('/tag/{id}', [TagController::class, 'show']);
+Route::put('/tag/{id}', [TagController::class, 'update']);
+Route::delete('/tag/{id}', [TagController::class, 'destroy']);
