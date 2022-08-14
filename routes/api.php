@@ -21,6 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 // news router
 Route::post('/news', [NewsController::class, 'store']);
+Route::get('/news', [NewsController::class, 'index']);
+Route::get('/news/{id}', [NewsController::class, 'show']);
+Route::put('/news/{id}', [NewsController::class, 'update']);
+Route::delete('/news/{id}', [NewsController::class, 'destroy']);
 
 // topic routes
 Route::post('/topic', [TopicController::class, 'store']);

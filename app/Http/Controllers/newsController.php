@@ -16,7 +16,13 @@ class NewsController extends Controller
      */
     public function index()
     {
-        //
+        $news = News::all();
+        $respone = [
+            'message' => 'Get All news successfully',
+            'data' => $news
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
     }
 
     /**
@@ -67,7 +73,17 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        //
+        $findNews = News::find($id);
+        if (!$findNews) {
+            return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $respone = [
+            'message' => 'Get news successfully',
+            'data' => $findNews
+        ];
+
+        return response()->json($respone, Response::HTTP_OK);
     }
 
     /**
@@ -90,7 +106,28 @@ class NewsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $findNews = News::findOrFail($id);
+        if (!$findNews) {
+            return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+        }
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string'],
+            'status' => ['required', 'in:draft,published,deleted'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        try {
+            $findNews->update($request->all());
+            $respone = [
+                'message' => 'News updated successfully',
+                'data' => $findNews
+            ];
+            return response()->json($respone, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'News not updated'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -101,6 +138,19 @@ class NewsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $findNews = News::findOrFail($id);
+        if (!$findNews) {
+            return response()->json(['message' => 'News not found'], Response::HTTP_NOT_FOUND);
+        }
+        try {
+            $findNews->delete();
+            $respone = [
+                'message' => 'News deleted successfully',
+                'data' => $findNews
+            ];
+            return response()->json($respone, Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(['message' => 'News not deleted'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
